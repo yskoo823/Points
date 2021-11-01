@@ -21,7 +21,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     // TODO: set up following class attributes
     // Uri: get from LocationsProvider
-    // 2 LatLng for SJSU and CS department (given in exercise 7, or you can find those yourself)
+    // 2 LatLng for SJSU and CS department (given in exercise 6, or you can find those yourself)
     // (Extra credit) SharedPreferences and KEYs needed
 
     @Override

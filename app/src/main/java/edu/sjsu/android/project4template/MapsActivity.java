@@ -109,6 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Draw a marker based on the LatLng object on the map
         // After getting all data, move the "camera" to focus on the last clicked location
         // Also the zoom level should be the same as the last clicked location
+        // If you did the extra credit, probably no need to do the move camara step
     }
 
     @Override

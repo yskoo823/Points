@@ -1,4 +1,4 @@
-package edu.sjsu.android.project4template;
+package edu.sjsu.android.project4kevinkoo;
 
 import org.junit.Test;
 

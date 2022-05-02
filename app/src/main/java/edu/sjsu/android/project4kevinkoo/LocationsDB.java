@@ -1,4 +1,4 @@
-package edu.sjsu.android.project4template;
+package edu.sjsu.android.project4kevinkoo;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,6 +22,12 @@ class LocationsDB extends SQLiteOpenHelper {
     protected static final String COLUMN_1 = "latitude";
     protected static final String COLUMN_2 = "longitude";
     protected static final String COLUMN_3 = "zoom_level";
+    static final String CREATE_TABLE =
+            " CREATE TABLE " + TABLE_NAME +
+                    " ("+ COLUMN_0 + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + COLUMN_1 + " DOUBLE NOT NULL, "
+                    + COLUMN_2 + " DOUBLE NOT NULL, "
+                    + COLUMN_3 + " FLOAT NOT NULL);";
 
     public LocationsDB(@Nullable Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -30,13 +36,7 @@ class LocationsDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         try {
-            sqLiteDatabase.execSQL(
-                    "CREATE TABLE " + TABLE_NAME + " (" +
-                            COLUMN_0 + " INT PRIMARY KEY AUTOINCREMENT, " +
-                            COLUMN_1 + " DOUBLE, " +
-                            COLUMN_2 + " DOUBLE, " +
-                            COLUMN_3 + " FLOAT);"
-            );
+            sqLiteDatabase.execSQL(CREATE_TABLE);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -80,6 +80,6 @@ class LocationsDB extends SQLiteOpenHelper {
     public Cursor getAllLocations() {
         // Remember to delete the throw statement after you done
         SQLiteDatabase database = getReadableDatabase();
-        return database.rawQuery("SELECT * FROM " + TABLE_NAME, null, null);
+        return database.query(TABLE_NAME, new String[]{COLUMN_1, COLUMN_2, COLUMN_3}, null, null, null, null, null);
     }
 }

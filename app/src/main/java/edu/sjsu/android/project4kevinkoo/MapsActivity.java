@@ -1,14 +1,12 @@
-package edu.sjsu.android.project4template;
+package edu.sjsu.android.project4kevinkoo;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.CallLog;
 import android.view.View;
 import android.widget.Toast;
 
@@ -52,6 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         findViewById(R.id.university).setOnClickListener(this::switchView);
         findViewById(R.id.cs).setOnClickListener(this::switchView);
         findViewById(R.id.location).setOnClickListener(this::getLocation);
+        findViewById(R.id.uninstall).setOnClickListener(this::uninstall);
 
         // TODO: retrieve and draw already saved locations in map
         // Hint: a method in LoaderManager
@@ -102,8 +101,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Otherwise, delete all.
             // Both operations should be done through content provider
             if (contentValues.length > 0) {
-                System.out.println(CONTENT_URI);
-                System.out.println(contentValues[0]);
                 getContentResolver().insert(CONTENT_URI, contentValues[0]);
             }
             else {
@@ -173,19 +170,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Remember to attach them to the buttons in onCreate
     // getLocation and switchView are the same as the ones in exercise 6.
     public void uninstall(View view) {
-        // TODO: uninstall the app
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.app_name);
-        builder.setMessage(R.string.uninstall_dialog_message);
-        builder.setPositiveButton("Yes", (dialog, id) -> {
-            Intent delete = new Intent(Intent.ACTION_DELETE,
-                    Uri.parse("package:" + getPackageName()));
-            startActivity(delete);
-        });
-        builder.setNegativeButton("No", (dialog, id) -> {
-            dialog.dismiss();
-        });
-        builder.create().show();
+        Intent delete = new Intent(Intent.ACTION_DELETE,
+                Uri.parse("package:" + getPackageName()));
+        startActivity(delete);
     }
 
     public void getLocation(View view) {

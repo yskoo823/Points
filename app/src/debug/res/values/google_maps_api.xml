@@ -5,5 +5,5 @@
     gradlew signingReport
     Check exercise 6 & lesson 21 page 7 for how to get API key.
     -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">YOUR_KEY_HERE</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCoImRqZEQXSSHmv-vHH2975o8KxjsZYT0</string>
 </resources>

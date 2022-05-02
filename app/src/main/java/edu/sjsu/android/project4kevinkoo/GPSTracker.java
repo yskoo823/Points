@@ -1,4 +1,4 @@
-package edu.sjsu.android.project4template;
+package edu.sjsu.android.project4kevinkoo;
 
 import android.Manifest;
 import android.app.Activity;

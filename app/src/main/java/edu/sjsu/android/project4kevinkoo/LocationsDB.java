@@ -3,6 +3,7 @@ package edu.sjsu.android.project4template;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -17,6 +18,10 @@ class LocationsDB extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "locations";
     private static final int VERSION = 1;
     // TODO: 4 Strings (protected static final) for 4 column names
+    protected static final String COLUMN_0 = "_id";
+    protected static final String COLUMN_1 = "latitude";
+    protected static final String COLUMN_2 = "longitude";
+    protected static final String COLUMN_3 = "zoom_level";
 
     public LocationsDB(@Nullable Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -24,7 +29,18 @@ class LocationsDB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        // TODO: execute the SQL statement to create the table
+        try {
+            sqLiteDatabase.execSQL(
+                    "CREATE TABLE " + TABLE_NAME + " (" +
+                            COLUMN_0 + " INT PRIMARY KEY AUTOINCREMENT, " +
+                            COLUMN_1 + " DOUBLE, " +
+                            COLUMN_2 + " DOUBLE, " +
+                            COLUMN_3 + " FLOAT);"
+            );
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -40,9 +56,9 @@ class LocationsDB extends SQLiteOpenHelper {
      * @return the id
      */
     public long insert(ContentValues contentValues) {
-        // TODO: insert the values to the table
         // Remember to delete the throw statement after you done
-        throw new UnsupportedOperationException("Not yet implemented");
+        SQLiteDatabase database = getWritableDatabase();
+        return database.insert(TABLE_NAME, null, contentValues);
     }
 
     /**
@@ -51,9 +67,9 @@ class LocationsDB extends SQLiteOpenHelper {
      * @return number of locations deleted
      */
     public int deleteAll() {
-        // TODO: delete all data from the table
         // Remember to delete the throw statement after you done
-        throw new UnsupportedOperationException("Not yet implemented");
+        SQLiteDatabase database = getWritableDatabase();
+        return database.delete(TABLE_NAME, null, null);
     }
 
     /**
@@ -62,8 +78,8 @@ class LocationsDB extends SQLiteOpenHelper {
      * @return Cursor
      */
     public Cursor getAllLocations() {
-        // TODO: query all data from the table
         // Remember to delete the throw statement after you done
-        throw new UnsupportedOperationException("Not yet implemented");
+        SQLiteDatabase database = getReadableDatabase();
+        return database.rawQuery("SELECT * FROM " + TABLE_NAME, null, null);
     }
 }

@@ -3,10 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mapsFragment2">
+    app:startDestination="@id/map">
     <fragment
-        android:id="@+id/mapsFragment2"
+        android:id="@+id/map"
         android:name="edu.sjsu.android.Points.MapsFragment"
         android:label="MapsFragment"
-        tools:layout="@layout/fragment_maps"/>
+        tools:layout="@layout/fragment_maps">
+    </fragment>
+    <fragment
+        android:id="@+id/list"
+        android:name="edu.sjsu.android.Points.ListFragment"
+        android:label="fragment_list"
+        tools:layout="@layout/fragment_list" />
 </navigation>

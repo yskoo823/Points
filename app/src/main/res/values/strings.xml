@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Project4</string>
-    <string name="title_activity_maps">MapsActivity</string>
-    <string name="uninstall_dialog_message">WOuld you like to uninstall this app?</string>
+    <string name="app_name">Points</string>
+    <string name="title_activity_main">Points</string>
+    <string name="uninstall_dialog_message">Would you like to uninstall this app?</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

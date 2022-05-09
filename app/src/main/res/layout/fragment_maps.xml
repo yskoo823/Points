@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapsActivity">
+    tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
@@ -58,9 +58,5 @@
         android:layout_margin="10dp"
         app:layout_constraintBottom_toTopOf="@+id/location"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <!--TODO: setup UI:
-    3 buttons on top for switching views
-    + 2 FAB for getting location and uninstalling app-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

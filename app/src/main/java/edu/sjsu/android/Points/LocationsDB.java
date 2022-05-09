@@ -17,16 +17,16 @@ class LocationsDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "locationsDatabase";
     private static final String TABLE_NAME = "locations";
     private static final int VERSION = 1;
-    protected static final String COLUMN_0 = "_id";
-    protected static final String COLUMN_1 = "latitude";
-    protected static final String COLUMN_2 = "longitude";
-    protected static final String COLUMN_3 = "zoom_level";
+    protected static final String ID = "_id";
+    protected static final String LAT = "latitude";
+    protected static final String LNG = "longitude";
+    protected static final String ZOOM = "zoom_level";
     static final String CREATE_TABLE =
             " CREATE TABLE " + TABLE_NAME +
-                    " ("+ COLUMN_0 + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + COLUMN_1 + " DOUBLE NOT NULL, "
-                    + COLUMN_2 + " DOUBLE NOT NULL, "
-                    + COLUMN_3 + " FLOAT NOT NULL);";
+                    " ("+ ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + LAT + " DOUBLE NOT NULL, "
+                    + LNG + " DOUBLE NOT NULL, "
+                    + ZOOM + " FLOAT NOT NULL);";
 
     public LocationsDB(@Nullable Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -79,6 +79,6 @@ class LocationsDB extends SQLiteOpenHelper {
     public Cursor getAllLocations() {
         // Remember to delete the throw statement after you done
         SQLiteDatabase database = getReadableDatabase();
-        return database.query(TABLE_NAME, new String[]{COLUMN_0, COLUMN_1, COLUMN_2, COLUMN_3}, null, null, null, null, null);
+        return database.query(TABLE_NAME, new String[]{ID, LAT, LNG, ZOOM}, null, null, null, null, null);
     }
 }

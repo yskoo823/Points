@@ -2,33 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.sjsu.android.Points">
 
-    <!--TODO: add required permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
     <application
+        android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Project4"
-        android:fullBackupContent="true"
-        android:allowBackup="true">
-        <!-- TODO: change authorities to your own name -->
-        <provider
-            android:name="edu.sjsu.android.Points.LocationsProvider"
-            android:authorities="edu.sjsu.android.Points"
-            android:enabled="true"
-            android:exported="true"/>
+        android:theme="@style/Theme.Project4">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCoImRqZEQXSSHmv-vHH2975o8KxjsZYT0" />
+            android:value="${MAPS_API_KEY}" />
+
+        <provider
+            android:name=".LocationsProvider"
+            android:authorities="edu.sjsu.android.Points"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
-            android:name="edu.sjsu.android.Points.MapsActivity"
+            android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:exported="true"
             android:label="@string/title_activity_maps">
             <intent-filter>

@@ -1,6 +1,7 @@
 package edu.sjsu.android.Points;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -75,6 +76,7 @@ class GPSTracker implements OnSuccessListener<Location> {
                     Toast.LENGTH_LONG).show();
     }
 
+    @SuppressLint("MissingPermission")
     public void getLocation() {
         FusedLocationProviderClient provider =
                 LocationServices.getFusedLocationProviderClient(context);

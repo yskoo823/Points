@@ -1,4 +1,4 @@
-package edu.sjsu.android.project4kevinkoo;
+package edu.sjsu.android.Points;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -17,7 +17,6 @@ class LocationsDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "locationsDatabase";
     private static final String TABLE_NAME = "locations";
     private static final int VERSION = 1;
-    // TODO: 4 Strings (protected static final) for 4 column names
     protected static final String COLUMN_0 = "_id";
     protected static final String COLUMN_1 = "latitude";
     protected static final String COLUMN_2 = "longitude";
@@ -80,6 +79,6 @@ class LocationsDB extends SQLiteOpenHelper {
     public Cursor getAllLocations() {
         // Remember to delete the throw statement after you done
         SQLiteDatabase database = getReadableDatabase();
-        return database.query(TABLE_NAME, new String[]{COLUMN_1, COLUMN_2, COLUMN_3}, null, null, null, null, null);
+        return database.query(TABLE_NAME, new String[]{COLUMN_0, COLUMN_1, COLUMN_2, COLUMN_3}, null, null, null, null, null);
     }
 }

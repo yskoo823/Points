@@ -1,4 +1,4 @@
-package edu.sjsu.android.project4kevinkoo;
+package edu.sjsu.android.Points;
 
 import android.content.Context;
 

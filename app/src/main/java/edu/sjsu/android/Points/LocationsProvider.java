@@ -1,4 +1,4 @@
-package edu.sjsu.android.project4kevinkoo;
+package edu.sjsu.android.Points;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -12,6 +12,7 @@ import android.net.Uri;
  */
 public class LocationsProvider extends ContentProvider {
 
+    protected static final Uri CONTENT_URI = Uri.parse("content://edu.sjsu.android.Points");
     private LocationsDB database;
     @Override
     public boolean onCreate() {
@@ -41,7 +42,6 @@ public class LocationsProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        // TODO: call getAllLocations() from the LocationDB object
         return database.getAllLocations();
     }
 

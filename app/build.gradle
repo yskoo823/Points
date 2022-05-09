@@ -7,7 +7,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "edu.sjsu.android.project4template"
+        applicationId "edu.sjsu.android.Points"
         minSdk 30
         targetSdk 32
         versionCode 1

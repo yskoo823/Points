@@ -1,8 +1,8 @@
-package edu.sjsu.android.project4kevinkoo;
+package edu.sjsu.android.Points;
 
-import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -30,12 +30,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     // TODO: set up following class attributes
     // Uri: get from LocationsProvider
-    private final String AUTHORITY = "edu.sjsu.android.project4kevinkoo";
-    private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    private final Uri CONTENT_URI = LocationsProvider.CONTENT_URI;
     // 2 LatLng for SJSU and CS department (given in exercise 6, or you can find those yourself)
     // (Extra credit) SharedPreferences and KEYs needed
+    SharedPreferences preferences;
     private final LatLng LOCATION_UNIV = new LatLng(37.335371, -121.881050);
     private final LatLng LOCATION_CS = new LatLng(37.333714, -121.881860);
+
+    private final String TYPE = "type";
+    private final String LAT = "lat";
+    private final String LNG = "lng";
+    private final String ZOOM = "zoom";
+    private int mapType;
+    private LatLng position;
+    private float zoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +53,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
-        // TODO: attach listeners to the buttons
         findViewById(R.id.city).setOnClickListener(this::switchView);
         findViewById(R.id.university).setOnClickListener(this::switchView);
         findViewById(R.id.cs).setOnClickListener(this::switchView);
@@ -54,20 +61,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // TODO: retrieve and draw already saved locations in map
         // Hint: a method in LoaderManager
+        LoaderManager.getInstance(this).restartLoader(0, null, this);
         // TODO: extra credit - restore the map setting
         //  (camara position & map type) using SharedPreferences
+        preferences = getPreferences(MODE_PRIVATE);
+        mapType = preferences.getInt(TYPE, GoogleMap.MAP_TYPE_NORMAL);
+        double lat = preferences.getFloat(LAT, -200f);
+        double lng = preferences.getFloat(LNG, -200f);
+        if (lat != -200f && lng != -200f) {
+            position = new LatLng(lat, lng);
+        }
+        zoom = preferences.getFloat(ZOOM, 0f);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(TYPE, mMap.getMapType());
+        editor.putFloat(LAT, (float) mMap.getCameraPosition().target.latitude);
+        editor.putFloat(LNG, (float) mMap.getCameraPosition().target.longitude);
+        editor.putFloat(ZOOM, mMap.getCameraPosition().zoom);
+        editor.apply();
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-        // TODO: extra credit - restore the map setting
+
+        if(position != null) {
+            mMap.setMapType(mapType);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+        }
+
         mMap.setOnMapClickListener(point -> {
-            // TODO: insert the LatLng point to the database on click
-            // (You may consider put the code in an private helper method)
-            // 1) Add a maker on the point to the map
-            // 2) Store the latitude, longitude and zoom level of the point to SQLite database using ContentValues
-            // 3) Call execute(ContentValues) on a MyTask (defined below) object to add a point
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(point);
             mMap.addMarker(markerOptions);
@@ -79,14 +106,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         mMap.setOnMapLongClickListener(point -> {
-            // TODO: delete all locations from the database on long click
-            // (You may consider put the code in an private helper method)
-            // 1) Clear all markers from the Google Map
-            // 2) Call execute() on a MyTask (defined below) object to clear the database
-            // 3) Toast a message "All makers are removed"
             mMap.clear();
             new MyTask().execute();
-            Toast.makeText(this, "All markers are removed", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "All markers are removed", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -96,15 +118,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private class MyTask extends AsyncTask<ContentValues, Void, Void> {
         @Override
         protected Void doInBackground(ContentValues... contentValues) {
-            // TODO: insert one row or delete all data base on input
-            // Hint: if the first contentValues is not null, insert it
-            // Otherwise, delete all.
-            // Both operations should be done through content provider
             if (contentValues.length > 0) {
                 getContentResolver().insert(CONTENT_URI, contentValues[0]);
             }
             else {
-                getContentResolver().delete(CONTENT_URI, null);
+                getContentResolver().delete(CONTENT_URI, null, null);
             }
             return null;
         }
@@ -124,9 +142,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        // TODO: load the cursor that's pointing to the database
-        // Hint: return a CursorLoader object with this context
-        // and the URI (set other parameters to null)
         return new CursorLoader(this, CONTENT_URI, null, null, null, null);
     }
 
@@ -139,24 +154,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
-        // TODO: display markers based on the database using cursor
-        // First, get data row by row using the cursor
-        // For each row, get the latitude, longitude and zoom level
-        // Draw a marker based on the LatLng object on the map
-        // After getting all data, move the "camera" to focus on the last clicked location
-        // Also the zoom level should be the same as the last clicked location
-        // If you did the extra credit, probably no need to do the move camara step
+        double lat;
+        double lng;
+        float zoom;
         if (cursor.moveToFirst()) {
             do {
-                double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(LocationsDB.COLUMN_1));
-                double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(LocationsDB.COLUMN_2));
-                float zoom = cursor.getFloat(cursor.getColumnIndexOrThrow(LocationsDB.COLUMN_3));
-                LatLng point = new LatLng(latitude, longitude);
+                lat = cursor.getDouble(cursor.getColumnIndexOrThrow(LocationsDB.COLUMN_1));
+                lng = cursor.getDouble(cursor.getColumnIndexOrThrow(LocationsDB.COLUMN_2));
+                zoom = cursor.getFloat(cursor.getColumnIndexOrThrow(LocationsDB.COLUMN_3));
+                LatLng point = new LatLng(lat, lng);
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(point);
                 mMap.addMarker(markerOptions);
             }
             while(cursor.moveToNext());
+
+            if (position != null) return;
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), zoom));
         }
     }
 
@@ -184,7 +199,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void switchView(View view) {
-        // TODO: switch between different views based on the button being clicked
         CameraUpdate update = null;
         if (view.getId() == R.id.city) {
             mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);

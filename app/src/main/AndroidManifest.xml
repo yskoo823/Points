@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.sjsu.android.project4kevinkoo">
+    package="edu.sjsu.android.Points">
 
     <!--TODO: add required permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -18,8 +18,8 @@
         android:allowBackup="true">
         <!-- TODO: change authorities to your own name -->
         <provider
-            android:name="edu.sjsu.android.project4kevinkoo.LocationsProvider"
-            android:authorities="edu.sjsu.android.project4kevinkoo"
+            android:name="edu.sjsu.android.Points.LocationsProvider"
+            android:authorities="edu.sjsu.android.Points"
             android:enabled="true"
             android:exported="true"/>
 
@@ -28,7 +28,7 @@
             android:value="AIzaSyCoImRqZEQXSSHmv-vHH2975o8KxjsZYT0" />
 
         <activity
-            android:name="edu.sjsu.android.project4kevinkoo.MapsActivity"
+            android:name="edu.sjsu.android.Points.MapsActivity"
             android:exported="true"
             android:label="@string/title_activity_maps">
             <intent-filter>

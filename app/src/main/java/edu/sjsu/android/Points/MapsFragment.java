@@ -128,11 +128,7 @@ public class MapsFragment extends Fragment implements LoaderManager.LoaderCallba
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
-        getActivity().findViewById(R.id.city).setOnClickListener(this::switchView);
-        getActivity().findViewById(R.id.university).setOnClickListener(this::switchView);
-        getActivity().findViewById(R.id.cs).setOnClickListener(this::switchView);
         getActivity().findViewById(R.id.location).setOnClickListener(this::getLocation);
-        getActivity().findViewById(R.id.uninstall).setOnClickListener(this::uninstall);
 
         LoaderManager.getInstance(this).restartLoader(0, null, this);
 
@@ -191,32 +187,11 @@ public class MapsFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-    public void uninstall(View view) {
-        Intent delete = new Intent(Intent.ACTION_DELETE,
-                Uri.parse("package:" + getActivity().getPackageName()));
-        startActivity(delete);
-    }
-
     public void getLocation(View view) {
         // Remember to check if the location is enabled
         // and ask for permissions
         // Can implement GPSTracker class to do all these.
         GPSTracker tracker = new GPSTracker(getActivity());
         tracker.getLocation();
-    }
-
-    public void switchView(View view) {
-        CameraUpdate update = null;
-        if (view.getId() == R.id.city) {
-            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            update = CameraUpdateFactory.newLatLngZoom(LOCATION_UNIV, 10f);
-        } else if (view.getId() == R.id.university) {
-            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            update = CameraUpdateFactory.newLatLngZoom(LOCATION_UNIV, 14f);
-        } else {
-            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            update = CameraUpdateFactory.newLatLngZoom(LOCATION_CS, 18f);
-        }
-        mMap.animateCamera(update);
     }
 }

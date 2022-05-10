@@ -37,11 +37,8 @@ public class MapsFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private GoogleMap mMap;
     private final Uri CONTENT_URI = LocationsProvider.CONTENT_URI;
-    // 2 LatLng for SJSU and CS department (given in exercise 6, or you can find those yourself)
-    // (Extra credit) SharedPreferences and KEYs needed
+
     SharedPreferences preferences;
-    private final LatLng LOCATION_UNIV = new LatLng(37.335371, -121.881050);
-    private final LatLng LOCATION_CS = new LatLng(37.333714, -121.881860);
 
     private final String TYPE = "type";
     private final String LAT = "lat";
@@ -96,6 +93,8 @@ public class MapsFragment extends Fragment implements LoaderManager.LoaderCallba
                                 contentValues.put(LocationsDB.LAT, point.latitude);
                                 contentValues.put(LocationsDB.LNG, point.longitude);
                                 contentValues.put(LocationsDB.ZOOM, mMap.getCameraPosition().zoom);
+                                contentValues.put(LocationsDB.TITLE, title);
+                                contentValues.put(LocationsDB.DESCRIPTION, description);
                                 new MyTask(getActivity()).execute(contentValues);
                             }
                         })
@@ -164,14 +163,20 @@ public class MapsFragment extends Fragment implements LoaderManager.LoaderCallba
         double lat;
         double lng;
         float zoom;
+        String title;
+        String description;
         if (cursor.moveToFirst()) {
             do {
                 lat = cursor.getDouble(cursor.getColumnIndexOrThrow(LocationsDB.LAT));
                 lng = cursor.getDouble(cursor.getColumnIndexOrThrow(LocationsDB.LNG));
                 zoom = cursor.getFloat(cursor.getColumnIndexOrThrow(LocationsDB.ZOOM));
+                title = cursor.getString(cursor.getColumnIndexOrThrow(LocationsDB.TITLE));
+                description = cursor.getString(cursor.getColumnIndexOrThrow(LocationsDB.DESCRIPTION));
                 LatLng point = new LatLng(lat, lng);
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(point);
+                markerOptions.title(title);
+                markerOptions.snippet(description);
                 mMap.addMarker(markerOptions);
             }
             while(cursor.moveToNext());

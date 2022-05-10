@@ -21,12 +21,17 @@ class LocationsDB extends SQLiteOpenHelper {
     protected static final String LAT = "latitude";
     protected static final String LNG = "longitude";
     protected static final String ZOOM = "zoom_level";
+    protected static final String TITLE = "title";
+    protected static final String DESCRIPTION = "description";
+
     static final String CREATE_TABLE =
             " CREATE TABLE " + TABLE_NAME +
                     " ("+ ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + LAT + " DOUBLE NOT NULL, "
                     + LNG + " DOUBLE NOT NULL, "
-                    + ZOOM + " FLOAT NOT NULL);";
+                    + ZOOM + " FLOAT NOT NULL, "
+                    + TITLE + " TEXT, "
+                    + DESCRIPTION + " TEXT);";
 
     public LocationsDB(@Nullable Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -79,6 +84,6 @@ class LocationsDB extends SQLiteOpenHelper {
     public Cursor getAllLocations() {
         // Remember to delete the throw statement after you done
         SQLiteDatabase database = getReadableDatabase();
-        return database.query(TABLE_NAME, new String[]{ID, LAT, LNG, ZOOM}, null, null, null, null, null);
+        return database.query(TABLE_NAME, new String[]{ID, LAT, LNG, ZOOM, TITLE, DESCRIPTION}, null, null, null, null, null);
     }
 }

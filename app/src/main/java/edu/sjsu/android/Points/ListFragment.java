@@ -1,64 +1,86 @@
 package edu.sjsu.android.Points;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ListFragment extends Fragment {
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.util.ArrayList;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class ListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private final Uri CONTENT_URI = LocationsProvider.CONTENT_URI;
+    ArrayList<Point> data;
+    ListAdapter adapter;
 
     public ListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListFragment newInstance(String param1, String param2) {
-        ListFragment fragment = new ListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        data = new ArrayList<>();
+        initDataSet();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        RecyclerView recyclerView = (RecyclerView) view;
+        recyclerView.setAdapter(new ListAdapter(getActivity(), getActivity().getContentResolver().query(CONTENT_URI, null, null, null)));
+        return view;
+    }
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return new CursorLoader(getActivity(), CONTENT_URI, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+        double lat;
+        double lng;
+        float zoom;
+        String title;
+        String description;
+        if (cursor.moveToFirst()) {
+            do {
+                lat = cursor.getDouble(cursor.getColumnIndexOrThrow(LocationsDB.LAT));
+                lng = cursor.getDouble(cursor.getColumnIndexOrThrow(LocationsDB.LNG));
+                zoom = cursor.getFloat(cursor.getColumnIndexOrThrow(LocationsDB.ZOOM));
+                title = cursor.getString(cursor.getColumnIndexOrThrow(LocationsDB.TITLE));
+                description = cursor.getString(cursor.getColumnIndexOrThrow(LocationsDB.DESCRIPTION));
+                data.add(new Point(lat, lng, zoom, title, description));
+            }
+            while(cursor.moveToNext());
+        }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
+    }
+
+    public void initDataSet() {
+        LoaderManager.getInstance(this).restartLoader(0, null, this);
     }
 }

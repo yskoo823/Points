@@ -9,7 +9,9 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -19,6 +21,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -47,18 +51,7 @@ public class MapsFragment extends Fragment implements LoaderManager.LoaderCallba
     private LatLng position;
     private float zoom;
 
-    private class MyTask extends AsyncTask<ContentValues, Void, Void> {
-        @Override
-        protected Void doInBackground(ContentValues... contentValues) {
-            if (contentValues.length > 0) {
-                getActivity().getContentResolver().insert(CONTENT_URI, contentValues[0]);
-            }
-            else {
-                getActivity().getContentResolver().delete(CONTENT_URI, null, null);
-            }
-            return null;
-        }
-    }
+
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -81,19 +74,39 @@ public class MapsFragment extends Fragment implements LoaderManager.LoaderCallba
             }
 
             mMap.setOnMapClickListener(point -> {
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(point);
-                mMap.addMarker(markerOptions);
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(LocationsDB.LAT, point.latitude);
-                contentValues.put(LocationsDB.LNG, point.longitude);
-                contentValues.put(LocationsDB.ZOOM, mMap.getCameraPosition().zoom);
-                new MyTask().execute(contentValues);
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+
+                final View createMarkerDialogView = inflater.inflate(R.layout.dialog_create_marker, null);
+                final TextView titleField = (EditText) createMarkerDialogView.findViewById(R.id.title);
+                final TextView descriptionField = (EditText) createMarkerDialogView.findViewById(R.id.description);
+
+                AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                        .setTitle("Create New Point")
+                        .setView(createMarkerDialogView)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String title = titleField.getText().toString();
+                                String description = descriptionField.getText().toString();
+                                MarkerOptions markerOptions = new MarkerOptions();
+                                markerOptions.position(point);
+                                markerOptions.title(title);
+                                markerOptions.snippet(description);
+                                mMap.addMarker(markerOptions).showInfoWindow();
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put(LocationsDB.LAT, point.latitude);
+                                contentValues.put(LocationsDB.LNG, point.longitude);
+                                contentValues.put(LocationsDB.ZOOM, mMap.getCameraPosition().zoom);
+                                new MyTask(getActivity()).execute(contentValues);
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
             });
 
             mMap.setOnMapLongClickListener(point -> {
                 mMap.clear();
-                new MyTask().execute();
+                new MyTask(getActivity()).execute();
                 Toast.makeText(getActivity(), "All markers are removed", Toast.LENGTH_SHORT).show();
             });
         }

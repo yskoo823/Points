@@ -6,7 +6,7 @@
         android:icon="@drawable/ic_baseline_map_24" />
 
     <item
-        android:id="@+id/list"
+        android:id="@+id/pointsInfo"
         android:title="List"
         android:icon="@drawable/ic_baseline_list_24"/>
 </menu>

@@ -152,6 +152,16 @@ public class MapsFragment extends Fragment implements LoaderManager.LoaderCallba
         editor.apply();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity)getActivity();
+        if (activity != null) {
+            activity.hideUpButton();
+        }
+
+    }
+
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {

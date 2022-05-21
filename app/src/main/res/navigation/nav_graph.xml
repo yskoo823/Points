@@ -10,9 +10,20 @@
         android:label="MapsFragment"
         tools:layout="@layout/fragment_maps">
     </fragment>
-    <fragment
-        android:id="@+id/list"
-        android:name="edu.sjsu.android.Points.ListFragment"
-        android:label="fragment_list"
-        tools:layout="@layout/fragment_list" />
+    <navigation android:id="@+id/pointsInfo"
+        app:startDestination="@id/list">
+        <fragment
+            android:id="@+id/list"
+            android:name="edu.sjsu.android.Points.ListFragment"
+            android:label="fragment_list"
+            tools:layout="@layout/fragment_list">
+            <action
+                android:id="@+id/action_list_to_pointFragment"
+                app:destination="@id/pointFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/pointFragment"
+            android:name="edu.sjsu.android.Points.PointFragment"
+            android:label="PointFragment" />
+    </navigation>
 </navigation>

@@ -19,21 +19,24 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private CursorAdapter mCursorAdapter;
     private Context mContext;
     private ViewHolder holder;
+    private OnRowClickedListener listener;
 
-    public interface OnPointClickedListener {
-        void onPointClick(int position);
+    public interface OnRowClickedListener {
+        void onRowClick(int position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
+        public OnRowClickedListener listener;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, OnRowClickedListener listener) {
             super(view);
+            this.listener = listener;
             // Define click listener for the ViewHolder's View
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    listener.onRowClick(getLayoutPosition());
                 }
             });
             title = (TextView) view.findViewById(R.id.title);
@@ -45,8 +48,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
 
-    public ListAdapter(Context context, Cursor c) {
+    public ListAdapter(Context context, Cursor c, OnRowClickedListener listener) {
         mContext = context;
+        this.listener = listener;
         mCursorAdapter = new CursorAdapter(mContext, c, 0) {
 
             @Override
@@ -71,7 +75,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_row_item, parent, false);
-        holder = new ViewHolder(view);
+        holder = new ViewHolder(view, listener);
             return holder;
     }
 
